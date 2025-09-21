@@ -1,0 +1,38 @@
+﻿@model IEnumerable<lab4.Models.SensorData>
+@{
+    ViewData["Title"] = "Gráficos de Sensores";
+    var labels = Model.Select(m => m.Timestamp.ToString("HH:mm:ss")).ToArray();
+    var temps = Model.Select(m => m.Temperatura).ToArray();
+    var hums = Model.Select(m => m.Humedad).ToArray();
+}
+
+<h1>Gráficos de Sensores</h1>
+
+<canvas id="sensorChart" width="800" height="400"></canvas>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var ctx = document.getElementById('sensorChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(labels)),
+                datasets: [
+                    {
+                        label: 'Temperatura (°C)',
+                        data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(temps)),
+                        borderColor: 'red',
+                        fill: false
+                    },
+                    {
+                        label: 'Humedad (%)',
+                        data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(hums)),
+                        borderColor: 'blue',
+                        fill: false
+                    }
+                ]
+            }
+        });
+    </script>
+}
